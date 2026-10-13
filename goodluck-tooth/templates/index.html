@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>好运牙 — 你的小牙齿伙伴</title>
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/tooth.css">
+<link rel="stylesheet" href="/static/css/garden.css">
+</head>
+<body>
+<div class="app-container">
+  <!-- 头部 -->
+  <header class="header">
+    <h1 class="logo">好运牙</h1>
+    <div class="header-right">
+      <span class="date-text" id="dateText"></span>
+      <span class="streak-badge" id="streakBadge">连续 0 天</span>
+    </div>
+  </header>
+
+  <!-- 主区域：牙齿小人 + 输入区 -->
+  <main class="main-area">
+    <div class="tooth-section" id="toothSection">
+      <div class="tooth-container" id="toothContainer">
+        <div class="tooth-body">
+          <div class="tooth-shine"></div>
+          <div class="tooth-eyes">
+            <div class="eye left"><div class="pupil"></div></div>
+            <div class="eye right"><div class="pupil"></div></div>
+          </div>
+          <div class="tooth-mouth"></div>
+          <div class="tooth-blush blush-left"></div>
+          <div class="tooth-blush blush-right"></div>
+        </div>
+        <div class="tooth-legs">
+          <div class="leg leg-left"></div>
+          <div class="leg leg-right"></div>
+        </div>
+        <div class="speech-bubble" id="speechBubble">
+          <p id="bubbleText">嘿！今天有什么想跟我说的吗？</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <textarea
+        id="thoughtInput"
+        placeholder="在这里写下你此刻的想法..."
+        maxlength="500"
+        rows="4"
+      ></textarea>
+      <div class="input-footer">
+        <span class="char-count"><span id="charCount">0</span>/500</span>
+        <button class="submit-btn" id="submitBtn">
+          <span class="btn-label">种下这颗种子</span>
+          <span class="btn-icon">*</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 每日消息栏 -->
+  <section class="daily-bar" id="dailyBar">
+    <div class="daily-card morning-card" id="morningCard">
+      <div class="daily-icon">&#9788;</div>
+      <div class="daily-content">
+        <p class="daily-greeting" id="morningGreeting"></p>
+        <p class="daily-action" id="morningAction"></p>
+      </div>
+    </div>
+    <div class="daily-card evening-card" id="eveningCard">
+      <div class="daily-icon">&#9790;</div>
+      <div class="daily-content">
+        <p class="daily-summary" id="eveningSummary"></p>
+      </div>
+    </div>
+    <div class="daily-placeholder" id="dailyPlaceholder">
+      <p>随时来找好运牙聊天吧~</p>
+    </div>
+  </section>
+
+  <!-- 花园 -->
+  <section class="garden-section" id="gardenSection">
+    <div class="garden-header">
+      <h2 id="gardenTitle">小萌芽花园</h2>
+      <span class="garden-stats" id="gardenStats">共 0 朵花</span>
+    </div>
+    <div class="garden-ground" id="gardenGround">
+      <div class="garden-empty" id="gardenEmpty">
+        <p>还没有花呢……</p>
+        <p>写下你的第一个想法，种下第一颗种子吧！</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 侧边：历史抽屉触发按钮 -->
+  <button class="history-toggle" id="historyToggle" title="查看历史">
+    &#9776;
+  </button>
+
+  <!-- 历史抽屉 -->
+  <aside class="history-drawer" id="historyDrawer">
+    <div class="drawer-header">
+      <h3>想法花园</h3>
+      <button class="drawer-close" id="drawerClose">&times;</button>
+    </div>
+    <div class="drawer-list" id="drawerList">
+      <p class="drawer-empty">还没有想法，快去写第一条吧~</p>
+    </div>
+  </aside>
+
+  <!-- 花朵详情弹窗 -->
+  <div class="flower-popover" id="flowerPopover">
+    <div class="popover-content">
+      <button class="popover-close" id="popoverClose">&times;</button>
+      <p class="popover-thought" id="popoverThought"></p>
+      <span class="popover-emotion" id="popoverEmotion"></span>
+      <p class="popover-response" id="popoverResponse"></p>
+      <span class="popover-time" id="popoverTime"></span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/tooth.js"></script>
+<script src="/static/js/garden.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

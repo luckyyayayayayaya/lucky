@@ -1,0 +1,236 @@
+/* Tooth container */
+.tooth-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+/* Tooth body — the main white tooth shape */
+.tooth-body {
+  position: relative;
+  width: 100px;
+  height: 110px;
+  background: linear-gradient(180deg, #FFFAF5 0%, #F5EFE7 100%);
+  border-radius: 48% 48% 38% 38% / 55% 55% 40% 40%;
+  box-shadow:
+    0 4px 6px rgba(0,0,0,0.06),
+    inset 0 2px 0 rgba(255,255,255,0.8),
+    0 8px 20px rgba(139, 115, 85, 0.12);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Shine highlight */
+.tooth-shine {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  width: 30px;
+  height: 18px;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.9) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Eyes */
+.tooth-eyes {
+  display: flex;
+  gap: 22px;
+  margin-top: 6px;
+}
+.eye {
+  width: 14px;
+  height: 16px;
+  background: #4A3728;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.pupil {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #FFF;
+  border-radius: 50%;
+  top: 3px;
+  left: 4px;
+  transition: transform 0.05s ease;
+}
+
+/* Mouth */
+.tooth-mouth {
+  position: absolute;
+  bottom: 26px;
+  width: 24px;
+  height: 10px;
+  border-bottom: 3px solid #8B7355;
+  border-radius: 0 0 50% 50%;
+  transition: all 0.3s ease;
+}
+
+/* Blush */
+.tooth-blush {
+  position: absolute;
+  width: 16px;
+  height: 10px;
+  background: radial-gradient(ellipse, rgba(255, 182, 193, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 52px;
+}
+.blush-left { left: 12px; }
+.blush-right { right: 12px; }
+
+/* Legs (tooth roots) */
+.tooth-legs {
+  display: flex;
+  gap: 14px;
+  margin-top: -2px;
+}
+.leg {
+  width: 16px;
+  height: 24px;
+  background: linear-gradient(180deg, #F5EFE7 0%, #E8DDD0 100%);
+  border-radius: 0 0 10px 10px;
+}
+
+/* Speech bubble */
+.speech-bubble {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  max-width: 220px;
+  min-width: 140px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--bg-card);
+}
+.speech-bubble.visible {
+  opacity: 1;
+}
+
+/* ============= Animation states ============= */
+
+/* Idle — gentle float */
+.tooth-container.state-idle .tooth-body {
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Listening — slight tilt, eyes wider */
+.tooth-container.state-listening .tooth-body {
+  transform: rotate(-3deg);
+}
+.tooth-container.state-listening .eye {
+  transform: scaleY(1.2);
+}
+
+/* Thinking — pulse + eyes look up */
+.tooth-container.state-thinking .tooth-body {
+  animation: pulse 0.8s ease-in-out infinite;
+}
+.tooth-container.state-thinking .pupil {
+  transform: translateY(-3px);
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Celebrating — bounce */
+.tooth-container.state-celebrating .tooth-body {
+  animation: celebrate 0.6s ease;
+}
+.tooth-container.state-celebrating .tooth-mouth {
+  width: 30px;
+  height: 14px;
+  border-bottom-width: 3px;
+}
+@keyframes celebrate {
+  0% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-15px) scale(1.1); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-8px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Comforting — gentle rock */
+.tooth-container.state-comforting .tooth-body {
+  animation: comfort 2s ease-in-out infinite;
+}
+.tooth-container.state-comforting .tooth-mouth {
+  width: 18px;
+  height: 6px;
+  border-bottom-width: 2px;
+}
+@keyframes comfort {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+/* Sleeping — slow breathing */
+.tooth-container.state-sleeping .tooth-body {
+  animation: sleep 4s ease-in-out infinite;
+}
+.tooth-container.state-sleeping .eye {
+  transform: scaleY(0.1);
+  transition: transform 0.5s ease;
+}
+.tooth-container.state-sleeping .tooth-mouth {
+  width: 14px;
+  height: 6px;
+  border-bottom: 2px solid #8B7355;
+}
+@keyframes sleep {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(0.97); opacity: 0.7; }
+}
+
+/* ---------- Sparkles ---------- */
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle-fly 1s ease-out forwards;
+}
+@keyframes sparkle-fly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* ---------- Bubble typing ---------- */
+.bubble-typing::after {
+  content: '|';
+  animation: blink 0.5s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}

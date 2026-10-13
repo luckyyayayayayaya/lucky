@@ -1,0 +1,174 @@
+/* Flower base */
+.flower {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  animation: bloom-in 0.6s ease-out both;
+  pointer-events: auto;
+}
+.flower:hover {
+  transform: scale(1.15);
+  z-index: 10;
+}
+.flower.new-flower {
+  animation: bloom-in 1s ease-out both, new-glow 2s ease-out;
+}
+
+@keyframes bloom-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes new-glow {
+  0% { filter: drop-shadow(0 0 6px var(--accent-gold)); }
+  100% { filter: drop-shadow(0 0 0px transparent); }
+}
+
+/* Stem */
+.flower-stem {
+  width: 3px;
+  height: 40px;
+  background: linear-gradient(180deg, #66BB6A, #4CAF50);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Petal base */
+.flower-head {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Petal ring */
+.flower-petals {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.petal {
+  position: absolute;
+  width: 14px;
+  height: 18px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+}
+
+/* Each petal positioned around center */
+.petal:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg) translateY(-14px); }
+.petal:nth-child(2) { transform: translate(-50%, -50%) rotate(60deg) translateY(-14px); }
+.petal:nth-child(3) { transform: translate(-50%, -50%) rotate(120deg) translateY(-14px); }
+.petal:nth-child(4) { transform: translate(-50%, -50%) rotate(180deg) translateY(-14px); }
+.petal:nth-child(5) { transform: translate(-50%, -50%) rotate(240deg) translateY(-14px); }
+.petal:nth-child(6) { transform: translate(-50%, -50%) rotate(300deg) translateY(-14px); }
+
+/* Flower center */
+.flower-center {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #5D4037;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Sway animation per flower */
+.flower.sway {
+  animation: sway 3s ease-in-out infinite var(--sway-delay, 0s);
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+/* ============ Flower type variants ============ */
+
+/* Sunflower */
+.flower-sunflower .petal { background: #FFD54F; }
+.flower-sunflower .petal:nth-child(even) { background: #FFC107; }
+.flower-sunflower .flower-center { background: #5D4037; width: 16px; height: 16px; }
+.flower-sunflower .flower-head { width: 42px; height: 42px; }
+.flower-sunflower .petal { width: 16px; height: 20px; }
+
+/* Rose */
+.flower-rose .petal { background: #F48FB1; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; }
+.flower-rose .petal:nth-child(even) { background: #EC407A; }
+.flower-rose .flower-center { background: #FFF176; width: 10px; height: 10px; }
+.flower-rose .flower-head { width: 38px; height: 38px; }
+.flower-rose .petal { width: 15px; height: 20px; }
+
+/* Tulip */
+.flower-tulip .petal { background: #CE93D8; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+.flower-tulip .petal:nth-child(even) { background: #AB47BC; }
+.flower-tulip .flower-center { background: #FFF9C4; width: 10px; height: 10px; }
+.flower-tulip .flower-head { width: 34px; height: 34px; }
+.flower-tulip .petal { width: 14px; height: 22px; }
+
+/* Lavender */
+.flower-lavender .petal { background: #B39DDB; width: 8px; height: 14px; }
+.flower-lavender .petal:nth-child(even) { background: #9575CD; }
+.flower-lavender .flower-center { background: #5E35B1; width: 8px; height: 8px; }
+.flower-lavender .flower-head { width: 28px; height: 28px; }
+.flower-lavender .petal { width: 9px; height: 15px; }
+.flower-lavender .flower-stem { height: 50px; }
+
+/* Dahlia */
+.flower-dahlia .petal { background: #FF8A65; border-radius: 60% 60% 30% 30%; }
+.flower-dahlia .petal:nth-child(even) { background: #FF7043; }
+.flower-dahlia .flower-center { background: #FFE082; width: 12px; height: 12px; }
+.flower-dahlia .flower-head { width: 40px; height: 40px; }
+.flower-dahlia .petal { width: 16px; height: 16px; }
+
+/* Forget-me-not */
+.flower-forget-me-not .petal { background: #90CAF9; }
+.flower-forget-me-not .petal:nth-child(even) { background: #64B5F6; }
+.flower-forget-me-not .flower-center { background: #FFF176; width: 8px; height: 8px; }
+.flower-forget-me-not .flower-head { width: 26px; height: 26px; }
+.flower-forget-me-not .petal { width: 11px; height: 14px; }
+
+/* Bluebell */
+.flower-bluebell .petal { background: #81D4FA; border-radius: 50% 50% 30% 30%; }
+.flower-bluebell .petal:nth-child(even) { background: #4FC3F7; }
+.flower-bluebell .flower-center { background: #FFF9C4; width: 10px; height: 10px; }
+.flower-bluebell .flower-head { width: 30px; height: 30px; }
+.flower-bluebell .petal { width: 12px; height: 18px; }
+.flower-bluebell .flower-stem { height: 44px; }
+
+/* Chamomile */
+.flower-chamomile .petal { background: #FFF9C4; width: 7px; height: 16px; }
+.flower-chamomile .petal:nth-child(even) { background: #FFF176; }
+.flower-chamomile .flower-center { background: #FFC107; width: 12px; height: 12px; }
+.flower-chamomile .flower-head { width: 32px; height: 32px; }
+.flower-chamomile .petal { width: 8px; height: 16px; }
+
+/* Daisy */
+.flower-daisy .petal { background: #F8F8F8; box-shadow: 0 0 2px rgba(0,0,0,0.05); }
+.flower-daisy .petal:nth-child(even) { background: #EEEEEE; }
+.flower-daisy .flower-center { background: #FFCC80; width: 10px; height: 10px; }
+.flower-daisy .flower-head { width: 30px; height: 30px; }
+.flower-daisy .petal { width: 12px; height: 16px; }
+
+/* Clover */
+.flower-clover .petal { background: #A5D6A7; border-radius: 60% 60% 40% 40%; }
+.flower-clover .petal:nth-child(even) { background: #81C784; }
+.flower-clover .flower-center { background: #66BB6A; width: 6px; height: 6px; }
+.flower-clover .flower-head { width: 24px; height: 24px; }
+.flower-clover .petal { width: 11px; height: 13px; }
+.flower-clover .flower-stem { height: 32px; }
+
+/* ============ Sway - applied only when not hovering ============ */
+.garden-ground .flower.sway:not(:hover) {
+  --sway-delay: 0s;
+  animation: sway 3s ease-in-out infinite var(--sway-delay);
+}
