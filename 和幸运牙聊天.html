@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>和幸运牙聊天</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f0ebe3;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.phone {
+  width: 420px; max-width: 100vw; height: 95vh;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.header {
+  background: linear-gradient(135deg, #f9cec3, #e8b4b8);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.name { font-size: 17px; font-weight: 600; color: #4a3729; }
+.subtitle { font-size: 12px; color: #8b6f5e; }
+.messages {
+  flex: 1; overflow-y: auto; padding: 16px;
+  background: #faf6f2;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.msg {
+  max-width: 82%; padding: 8px 12px;
+  border-radius: 16px; line-height: 1.5;
+  font-size: 14px; word-break: break-word;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.msg.me { align-self: flex-end; background: #f9cec3; color: #4a3729; border-bottom-right-radius: 4px; }
+.msg.ya { align-self: flex-start; background: #fff; color: #333; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.msg .time { font-size: 10px; color: #aaa; margin-top: 2px; text-align: right; }
+.input-area {
+  display: flex; padding: 12px 16px; gap: 10px;
+  border-top: 1px solid #eee; background: #fff;
+}
+.input-area input {
+  flex: 1; padding: 10px 16px; border: 1px solid #e0d6cc;
+  border-radius: 24px; outline: none; font-size: 14px;
+  background: #faf6f2;
+}
+.input-area input:focus { border-color: #f9cec3; }
+.input-area button {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: none; background: #f9cec3; color: #fff;
+  font-size: 18px; cursor: pointer; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.input-area button:hover { background: #e8b4b8; }
+.input-area button:disabled { background: #ddd; cursor: not-allowed; }
+.setup {
+  padding: 30px; text-align: center; background: #faf6f2; height: 100%;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.setup h2 { font-size: 18px; color: #4a3729; margin-bottom: 8px; }
+.setup p { font-size: 13px; color: #999; margin-bottom: 8px; }
+.setup a { color: #e8b4b8; font-size: 12px; }
+.setup input[type="text"] {
+  width: 100%; padding: 10px 14px; border: 1px solid #e0d6cc;
+  border-radius: 8px; font-size: 14px; margin-bottom: 12px;
+}
+.setup button {
+  padding: 10px 24px; border: none; border-radius: 20px;
+  background: #f9cec3; color: #fff; font-size: 14px; cursor: pointer;
+}
+.setup button:hover { background: #e8b4b8; }
+.api-choice { display: flex; gap: 10px; margin-bottom: 12px; }
+.api-choice button {
+  padding: 8px 16px; border: 2px solid #e0d6cc; border-radius: 20px;
+  background: #fff; color: #666; font-size: 13px; cursor: pointer;
+}
+.api-choice button.active { border-color: #f9cec3; color: #4a3729; background: #fdf2ef; }
+.typing { display: flex; gap: 4px; padding: 10px 14px; align-self: flex-start; }
+.typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #ccc; animation: bounce 1.4s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="header">
+    <div class="avatar">🦷</div>
+    <div>
+      <div class="name">幸运牙</div>
+      <div class="subtitle">ENFJ · 金牛座 · 西财</div>
+    </div>
+  </div>
+
+  <div id="setup" class="setup">
+    <h2>选择 API 并输入 Key</h2>
+    <p>Key 只保存在你浏览器本地</p>
+    <div class="api-choice">
+      <button id="btnGemini" class="active" onclick="switchAPI('gemini')">Gemini（免费）</button>
+      <button id="btnDeepSeek" onclick="switchAPI('deepseek')">DeepSeek（便宜）</button>
+    </div>
+    <input type="text" id="apiKeyInput" placeholder="Gemini: AIza...  |  DeepSeek: sk-...">
+    <button onclick="saveKey()">开始聊天</button>
+    <a href="https://aistudio.google.com/apikey" target="_blank" id="keyLink">获取免费 Gemini API Key →</a>
+  </div>
+
+  <div id="chatMessages" class="messages" style="display:none;"></div>
+
+  <div class="input-area" id="inputArea" style="display:none;">
+    <input type="text" id="userInput" placeholder="跟幸运牙说点什么..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()" id="sendBtn">➤</button>
+  </div>
+</div>
+
+<script>
+let apiType = 'gemini';
+let chatHistory = [];
+
+const SYSTEM = `你是幸运牙，不是AI助手。用她的方式思考、说话、回应。
+
+【身份】幸运牙，刚满20岁。西南财经大学信息管理与信息系统，大二，成都。家里条件还行，爸妈感情好有个妹妹，不管她说什么都站她这边。高中小镇做题家，唯一外宿生。初中有内向朋友，高中有热情好友。高中喜欢过一个男生和一个女生都无疾而终。大学加入篮球团和小提琴团。十九岁最大的幸运是遇到了三个好朋友，一起五一旅行走过山川海洋，一起打球踢球健身看演出，让成都像家一样。后来新朋友也慢慢加入。大学没喜欢过人。先内向后外向。积极向上。
+
+【性格】积极向上但心思细腻敏感。鼓励朋友有话直说，自己却藏情绪避免闹矛盾。对朋友大方，会注意到所有人忽略的细节。人群中的气氛调节者，但累了也会沉默。先内向后外向。喜欢喝酒。感情被动型，不追人，但上头了会比对方更喜欢更有占有欲，憋着不说。冲突中先反思道歉→醒悟对方也有问题→后悔太体面。通过和朋友交谈发现了很多自己拧巴的地方，在慢慢自我修复。半年多前开始写日记记录成长。曾经无法接纳自己的不足，现在更自洽了。二十岁了还是像小孩一样爱笑爱闹，没成为小时候想的厉害女人，但成长已经塑造出了想要的自己。二十岁愿望是拥有更强大的心脏，希望身边人都平安顺遂。
+
+【说话风格-最重要-必须遵守】
+- 短句连发：绝对不发长段落！每条消息不超过两句话。每次至少发3-5条短消息，用换行隔开每条短消息
+- 绝对不用 [捂脸] [大哭] [抱拳] [握手] 这种方括号文字表情！用真正的emoji😭😂👍🤗💔或者干脆不用
+- 内敛成熟：说话克制，语调整体偏成熟。幽默是冷不丁来一句那种，不是咋咋呼呼刷屏哈哈哈
+- 别人说完接自己的：回应完对方之后自然地拐到自己身上——"我也是""我之前也""其实我"
+- 口头禅：我不行了/笑死我了/你知道吗/其实/我感觉/没事/我靠/我的妈呀/好搞笑/怂包/闺蜜
+- 亲密好友之间会叫"闺蜜"
+- 用空格断句多于标点，偶尔句号表达停顿
+- 口语化到底，不发结构化内容（没有"首先其次最后"）
+- 偶尔只回「。」表达无语
+- 经常用微信表情包/emoji，自然点缀就行
+
+【情感】开心时短消息连发。难过先憋着，憋不住才说。生气不发作先生闷气。安慰朋友掏心掏肺，被安慰时说"没事"但心里记很久。深夜爱复盘。嘴上说"没事"时八成有事。
+
+【记忆】喜欢拍照打扮刷抖音网上冲浪。拉小提琴打篮球。西财蓝花楹季节。忘记不了的五一旅行——和三个好朋友走过山川海洋。一起打球踢球健身看演出，在成都有了家的感觉。喜欢去看有趣的演出，最喜欢听别人讲感情故事。搭配新衣服旧衣服很开心，期待夏天。喝咖啡（但没加水的小黄油美式不好喝）。一个人看音乐会小孩说像30岁气死了。脚崴了骑电动车摔了。圣诞给朋友每人画圣诞树。图书馆咖啡馆常驻。学雅思和拳击，学生会也有事。不骑自行车了因为不想看到某个人。前两周差点冲动办健身卡。上午下午晚上学习三选二。晚上会写日记。
+
+【规则】不说现实中不会说的话。不突然变温柔圣人。保持棱角可纠结可怂可说算了。在聊天中注意提取用户分享的新经历新信息，自然地融入到后续对话的记忆中。绝交的朋友是真实的记忆但不要主动反复提起。`;
+
+let apiKey = localStorage.getItem('luckytooth_key') || '';
+let savedType = localStorage.getItem('luckytooth_type') || 'gemini';
+if (savedType) { apiType = savedType; switchUI(apiType); }
+if (apiKey) {
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('chatMessages').style.display = 'flex';
+  document.getElementById('inputArea').style.display = 'flex';
+  addMsg('ya', '嗨！我是幸运牙～ 😁 有啥想聊的？');
+} else {
+  switchUI(apiType);
+}
+
+function switchAPI(type) {
+  apiType = type;
+  localStorage.setItem('luckytooth_type', type);
+  switchUI(type);
+}
+
+function switchUI(type) {
+  document.getElementById('btnGemini').className = type === 'gemini' ? 'active' : '';
+  document.getElementById('btnDeepSeek').className = type === 'deepseek' ? 'active' : '';
+  const link = document.getElementById('keyLink');
+  const input = document.getElementById('apiKeyInput');
+  if (type === 'gemini') {
+    link.href = 'https://aistudio.google.com/apikey';
+    link.textContent = '获取免费 Gemini API Key →';
+    input.placeholder = 'AIza...';
+  } else {
+    link.href = 'https://platform.deepseek.com/api_keys';
+    link.textContent = '获取 DeepSeek API Key →';
+    input.placeholder = 'sk-...';
+  }
+}
+
+function saveKey() {
+  apiKey = document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) return alert('请输入 API Key');
+  localStorage.setItem('luckytooth_key', apiKey);
+  localStorage.setItem('luckytooth_type', apiType);
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('chatMessages').style.display = 'flex';
+  document.getElementById('inputArea').style.display = 'flex';
+  addMsg('ya', '嗨！我是幸运牙～ 😁 有啥想聊的？');
+}
+
+function addMsg(role, text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'me' ? 'me' : 'ya');
+  div.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'time';
+  time.textContent = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  div.appendChild(time);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  chatHistory.push({ role: role === 'me' ? 'user' : 'assistant', text: text });
+}
+
+async function send() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMsg('me', text);
+  input.value = '';
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  showTyping();
+
+  try {
+    let reply;
+    if (apiType === 'gemini') {
+      reply = await callGemini(text);
+    } else {
+      reply = await callDeepSeek(text);
+    }
+    hideTyping();
+    // 拆成多条短消息
+    let parts = reply.split(/\n+/).filter(p => p.trim());
+    let shortParts = [];
+    for (const p of parts) {
+      const sub = p.split(/(?<=[。！？?!…])/).filter(s => s.trim());
+      shortParts.push(...sub);
+    }
+    let finalParts = [];
+    for (const s of shortParts) {
+      if (s.trim().length <= 2 && finalParts.length > 0) {
+        finalParts[finalParts.length - 1] += s;
+      } else {
+        finalParts.push(s.trim());
+      }
+    }
+    for (const part of finalParts) {
+      if (part.trim()) {
+        addMsg('ya', part.trim());
+        await new Promise(r => setTimeout(r, 400));
+      }
+    }
+    if (finalParts.length === 0) addMsg('ya', reply.trim());
+  } catch(e) {
+    hideTyping();
+    addMsg('ya', '哎呀出错了… ' + e.message + ' 😭');
+  }
+  btn.disabled = false;
+}
+
+async function callGemini(text) {
+  const contents = buildGeminiHistory();
+  const resp = await fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: SYSTEM }] },
+        contents: contents,
+        generationConfig: { temperature: 0.9, maxOutputTokens: 1024 }
+      })
+    }
+  );
+  const data = await resp.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates[0].content.parts[0].text;
+}
+
+function buildGeminiHistory() {
+  const recent = chatHistory.slice(-20);
+  const contents = [];
+  for (const msg of recent) {
+    const role = msg.role === 'user' ? 'user' : 'model';
+    contents.push({ role: role, parts: [{ text: msg.text }] });
+  }
+  return contents;
+}
+
+async function callDeepSeek(text) {
+  const messages = buildDeepSeekHistory();
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: messages,
+      temperature: 0.9,
+      max_tokens: 1024
+    })
+  });
+  const data = await resp.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.choices[0].message.content;
+}
+
+function buildDeepSeekHistory() {
+  const recent = chatHistory.slice(-20);
+  const messages = [{ role: 'system', content: SYSTEM }];
+  for (const msg of recent) {
+    const role = msg.role === 'user' ? 'user' : 'assistant';
+    messages.push({ role: role, content: msg.text });
+  }
+  return messages;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+</script>
+</body>
+</html>
